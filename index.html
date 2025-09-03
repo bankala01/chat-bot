@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service Chatbot</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Chatbot Container -->
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg flex flex-col h-[80vh] md:h-[70vh]">
+
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 rounded-t-xl">
+            <h1 class="text-xl font-bold">Customer Service Chatbot</h1>
+            <p class="text-sm opacity-80">How can I help you today?</p>
+        </header>
+
+        <!-- Messages Display Area -->
+        <div id="messages" class="flex-1 p-4 overflow-y-auto space-y-4">
+            <!-- Initial welcome message from the bot -->
+            <div class="flex justify-start">
+                <div class="bg-blue-100 text-gray-800 rounded-lg p-3 max-w-[80%] shadow-sm">
+                    Hello! I am a customer service chatbot. What can I assist you with today?
+                </div>
+            </div>
+        </div>
+
+        <!-- Input and Send Button -->
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex items-center rounded-b-xl">
+            <input type="text" id="userInput" class="flex-1 p-3 rounded-l-full border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200" placeholder="Type your message here...">
+            <button id="sendBtn" class="bg-blue-600 text-white p-3 rounded-r-full hover:bg-blue-700 transition duration-200 ml-1 shadow-md">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // The chatbot's core logic
+        const responses = {
+            "hello": "Hello! How can I assist you today?",
+            "hi": "Hi there! What can I help you with?",
+            "payment issue": "I'm sorry to hear you're having trouble with payments. Could you please provide your order number so I can look into this for you?",
+            "track order": "To track your order, please visit our website and enter your tracking number in the 'Track Order' section.",
+            "return policy": "Our return policy allows returns within 30 days of purchase. The item must be unused and in its original packaging.",
+            "contact support": "You can contact our support team by phone at 1-800-555-1234 or by email at support@example.com.",
+            "change address": "To change your shipping address, please log into your account and update the information in your profile settings.",
+            "thank you": "You're welcome! Is there anything else I can help you with?",
+            "bye": "Goodbye! Have a great day."
+        };
+
+        const messagesContainer = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function getResponse(input) {
+            const normalizedInput = input.toLowerCase().trim();
+            for (const key in responses) {
+                if (normalizedInput.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return "I'm sorry, I don't have a pre-defined answer for that. Would you like to be connected to a customer service representative?";
+        }
+
+        function displayMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `p-3 rounded-lg max-w-[80%] shadow-sm ${sender === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`;
+            contentDiv.textContent = text;
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to the latest message
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleSend() {
+            const userMessage = userInput.value.trim();
+            if (userMessage === '') return;
+            
+            // Display user message
+            displayMessage(userMessage, 'user');
+            
+            // Get and display bot response
+            const botResponse = getResponse(userMessage);
+            setTimeout(() => {
+                displayMessage(botResponse, 'bot');
+            }, 500); // Add a small delay for a more natural feel
+            
+            // Clear the input
+            userInput.value = '';
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSend();
+            }
+        });
+    </script>
+
+</body>
+</html>
